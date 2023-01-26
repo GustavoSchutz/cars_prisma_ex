@@ -21,15 +21,36 @@ async function getCarWithLicensePlate(licensePlate: string) {
 }
 
 async function createCar(model: string, licensePlate: string, year: number, color: string) {
-  return prisma.cars.create({
-    data: {
+  return prisma.cars.upsert({
+    create: {
       "model": model,
       "licensePlate": licensePlate,
       "year": year,
       "color": color
+    },
+
+    update: {
+      "model": model,
+      "year": year,
+      "color": color
+    },
+
+    where: {
+      licensePlate: licensePlate
     }
   })
 }
+
+// async function createCar(model: string, licensePlate: string, year: number, color: string) {
+//   return prisma.cars.create({
+//     data: {
+//       "model": model,
+//       "licensePlate": licensePlate,
+//       "year": year,
+//       "color": color
+//     }
+//   })
+// }
 
 async function deleteCar(id: number) {
   return prisma.cars.delete({
